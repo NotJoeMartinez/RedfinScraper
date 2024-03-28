@@ -18,14 +18,10 @@ scraper.setup('./zip_code_database.csv',multiprocessing=False)
 # scraper.scrape(city_states=[('Newark', 'NJ'),'JUNK, JUNKY'],zip_codes=None)
 # scraper.scrape(city_states=['junk, junky'],zip_codes=['77002'])
 # scraper.scrape() # From Config
-scraper.scrape(city_states=['Omaha,NE'],zip_codes=None)
+scraper.scrape(city_states=['Omaha,NE'],zip_codes=None, sold=True, sale_period='3mo')
 
-print(scraper.get_data())
 
-for i in range(1,11):
-    try:
-        scraper.get_data(id=f"D00{i}")
-    except:
-        print("Failed")
+data = scraper.get_data()
 
+data.to_csv('data.csv', index=False)
 

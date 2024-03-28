@@ -169,6 +169,7 @@ class RedfinScraper:
         
         self._data_id_ticker+=1
         self.data_id=f"D{self._data_id_ticker:03d}"
+        print(self.data_id)
 
 
         if (len(df_list)==0 or df_list is None):
@@ -194,7 +195,11 @@ class RedfinScraper:
 
         api_links=self._get_API_links(url_soups)
 
+        print(f"API)links: {api_links}")
+
         api_urls=self._generate_urls(api_links=api_links)
+
+        # print(f"API)urls: {api_urls}")
 
         api_responses=self._threaded_request(self._get_API_response,urls=api_urls)
 
@@ -374,17 +379,6 @@ class RedfinScraper:
 
 
 
-    # def _get_API_links(self,url_soups:list[tuple[str,BeautifulSoup]]):
-    #     api_links=[]
-    #     for url,soup in url_soups:
-    #         try:
-    #             target=soup.find(rsc.REDFIN_API_CLASS_DEF[0],rsc.REDFIN_API_CLASS_DEF[1])[rsc.REDFIN_API_CLASS_ID]
-    #             api_links.append(target)
-    #         except:
-    #             self._check_no_API_link(url)
-    #     return api_links
-
-
 
     def _get_API_links(self,url_soups:list[tuple[str,BeautifulSoup]]):
         api_links=[]
@@ -409,6 +403,9 @@ class RedfinScraper:
                         pass
             except:
                 self._check_no_API_link(url)
+        
+        api_links=list(set(api_links))
+
         return api_links
 
 
