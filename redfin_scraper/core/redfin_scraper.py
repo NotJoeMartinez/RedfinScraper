@@ -3,6 +3,7 @@ import multiprocessing
 import concurrent.futures
 import io
 import csv
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -373,16 +374,42 @@ class RedfinScraper:
 
 
 
+    # def _get_API_links(self,url_soups:list[tuple[str,BeautifulSoup]]):
+    #     api_links=[]
+    #     for url,soup in url_soups:
+    #         try:
+    #             target=soup.find(rsc.REDFIN_API_CLASS_DEF[0],rsc.REDFIN_API_CLASS_DEF[1])[rsc.REDFIN_API_CLASS_ID]
+    #             api_links.append(target)
+    #         except:
+    #             self._check_no_API_link(url)
+    #     return api_links
+
+
+
     def _get_API_links(self,url_soups:list[tuple[str,BeautifulSoup]]):
         api_links=[]
         for url,soup in url_soups:
             try:
-                target=soup.find(rsc.REDFIN_API_CLASS_DEF[0],rsc.REDFIN_API_CLASS_DEF[1])[rsc.REDFIN_API_CLASS_ID]
-                api_links.append(target)
+                scriptTags=soup.find_all('script')
+                for tag in scriptTags:
+                    script_str = tag.text
+                    regex_pattern = r'"urlPath":\s*"((?:\\u[0-9a-fA-F]{4}|[^"])*)"'
+                    match = re.search(regex_pattern, script_str)
+
+                    if match:
+
+                        matches = re.findall(regex_pattern, script_str)
+
+                        for match in matches:
+                            decoded_url = match.encode().decode('unicode_escape')
+                            if ("api/market?al" in decoded_url):
+                                decoded_url = decoded_url.replace("api/market?al", "api/gis-csv?al")
+                                api_links.append(decoded_url)
+                    else:
+                        pass
             except:
                 self._check_no_API_link(url)
         return api_links
-
 
 
 
