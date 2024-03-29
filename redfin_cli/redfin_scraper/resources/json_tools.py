@@ -1,6 +1,6 @@
 import json
 
-import redfin_scraper.config as rsc
+import redfin_cli.redfin_scraper.config as rsc
 
     
 config=rsc.CONFIG

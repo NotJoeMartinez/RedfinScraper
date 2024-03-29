@@ -10,10 +10,10 @@ from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
 
-import redfin_scraper.config as rsc
+import redfin_cli.redfin_scraper.config as rsc
 
-import redfin_scraper.resources.logging as rsrl
-import redfin_scraper.resources.json_tools as rsrj
+import redfin_cli.redfin_scraper.resources.logging as rsrl
+import redfin_cli.redfin_scraper.resources.json_tools as rsrj
 
 
 
@@ -169,7 +169,6 @@ class RedfinScraper:
         
         self._data_id_ticker+=1
         self.data_id=f"D{self._data_id_ticker:03d}"
-        print(self.data_id)
 
 
         if (len(df_list)==0 or df_list is None):
@@ -195,11 +194,9 @@ class RedfinScraper:
 
         api_links=self._get_API_links(url_soups)
 
-        print(f"API)links: {api_links}")
 
         api_urls=self._generate_urls(api_links=api_links)
 
-        # print(f"API)urls: {api_urls}")
 
         api_responses=self._threaded_request(self._get_API_response,urls=api_urls)
 
