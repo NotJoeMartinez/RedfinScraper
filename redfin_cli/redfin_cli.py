@@ -23,15 +23,22 @@ def export(zip_code, data_path, city_state, sold_by):
         return
     
 
-    scraper = RedfinScraper()
 
+    scraper = RedfinScraper()
     scraper.setup(data_path,multiprocessing=False)
 
+    if city_state is None:
+        arg_city_state = None
+    else:
+        arg_city_state = [city_state]
+    
+
     if sold_by is None:
-        scraper.scrape(zip_codes=[zip_code], city_states=[city_state])
+        print("Scraping for active listings")
+        scraper.scrape(zip_codes=[zip_code], city_states=arg_city_state)
     else:
         scraper.scrape(zip_codes=[zip_code], 
-                       city_states=[city_state], 
+                       city_states=arg_city_state, 
                        sold=True,
                        sale_period=sold_by)
 
