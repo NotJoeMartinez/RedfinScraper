@@ -1,6 +1,7 @@
 import click
 import datetime
 from .redfin_scraper import RedfinScraper
+from .utils import *
 
 REDFIN_VERSION = '0.1.0'
 
@@ -15,23 +16,28 @@ def cli():
 @click.option("--zip-code", "-z", required=False, help="Get houses by zip code")
 @click.option("--city-state", "-c", required=False, help="Get houses by city and state")
 @click.option("--data-path", "-d", required=True, help="Path to zip code database")
+@click.option("--state", "-st", required=False, help="Get data by state")
 @click.option("--sold-by", "-s", required=False, help="1mo','3mo','6mo','1yr','2yr','3yr','5yr' ")
-def export(zip_code, data_path, city_state, sold_by):
+def export(zip_code, data_path, city_state, sold_by, state):
 
-    if zip_code is None and city_state is None:
+    if zip_code == None and city_state == None and state == None:
         print("Please provide either a zip code or a city-state")
         return
     
 
 
     scraper = RedfinScraper()
-    scraper.setup(data_path,multiprocessing=False)
+    scraper.setup(data_path, multiprocessing=True)
 
     if city_state is None:
         arg_city_state = None
     else:
         arg_city_state = [city_state]
     
+    if (state is not None) and (city_state is None):
+        state = state.upper()
+        arg_city_state = get_cities_by_state(data_path, state)
+
 
     if sold_by is None:
         print("Scraping for active listings")
@@ -44,6 +50,7 @@ def export(zip_code, data_path, city_state, sold_by):
 
     data = scraper.get_data()
     # remove SALE TYPE = In accordance with local MLS rules, some MLS listings are not included in the download
+
 
     clean_data = data[data['SALE TYPE'] != 'In accordance with local MLS rules, some MLS listings are not included in the download']
 

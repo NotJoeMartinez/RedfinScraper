@@ -4,6 +4,7 @@ import concurrent.futures
 import io
 import csv
 import re
+import sqlite3
 
 import requests
 from bs4 import BeautifulSoup
@@ -69,8 +70,10 @@ class RedfinScraper:
             else:
                 try:
                     self.zip_database=pd.read_csv(filepath_or_buffer=zip_database_path,dtype={'zip':str})
+
                 except:
                     raise Exception("Could not locate zip_database.csv")
+
 
 
 

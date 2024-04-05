@@ -326,3 +326,5 @@ cython_debug/
 *.csv
 data.csv
 data
+
+*.xlsx
